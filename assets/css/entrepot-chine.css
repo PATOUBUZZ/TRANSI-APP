@@ -1,0 +1,64 @@
+/* =====================================================================
+ *  entrepot-chine.css  |  Styles PROPRES au portail Entrepôt Chine
+ * =====================================================================
+ *  Chargé APRÈS style.css (composants staff : section 15 ; saisie par
+ *  scan, cartes, sélection groupée : section 16).
+ *  Ici : uniquement la fiche de réception (estimation, mesures, photos).
+ *
+ *  Plan :
+ *   1. Fiche de réception     2. Photos     3. Responsive
+ * ===================================================================== */
+
+
+/* =====================================================================
+ * 1. FICHE DE RÉCEPTION (modale)
+ * ===================================================================== */
+.estimate {
+  display: grid; gap: 4px;
+  padding: 16px 18px; border-radius: var(--radius);
+  background: linear-gradient(145deg, var(--brand-900), var(--brand-700));
+  color: #fff;
+}
+.estimate__label { font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; opacity: .75; font-weight: 700; }
+.estimate__amount { font-size: 1.7rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+.estimate__detail { font-size: .8125rem; opacity: .8; }
+
+.measure-big .input { font-size: 1.25rem; font-weight: 700; padding: 14px; }
+
+
+/* =====================================================================
+ * 2. PHOTOS
+ * ===================================================================== */
+.photo-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.photo-uploader { display: grid; gap: 12px; }
+.photo-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; }
+.photo-tile {
+  position: relative; aspect-ratio: 1;
+  border-radius: var(--radius-sm); overflow: hidden;
+  border: 1px solid var(--line); background: var(--bg);
+}
+.photo-tile img { width: 100%; height: 100%; object-fit: cover; }
+.photo-tile--new { border: 2px solid var(--accent); }
+.photo-tile__badge {
+  position: absolute; left: 6px; bottom: 6px;
+  padding: 2px 7px; border-radius: 6px;
+  background: var(--accent); color: #fff;
+  font-size: .6875rem; font-weight: 800;
+}
+.photo-tile__remove {
+  position: absolute; top: 6px; right: 6px;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgb(15 23 42 / .75); color: #fff;
+  border: 0; cursor: pointer;
+}
+.photo-tile__remove:hover { background: var(--danger); }
+.photo-empty { color: var(--muted); font-size: .875rem; }
+
+
+/* =====================================================================
+ * 3. RESPONSIVE
+ * ===================================================================== */
+@media (max-width: 639px) {
+  .photo-actions .btn { flex: 1; }
+}

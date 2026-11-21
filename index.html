@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1f4b">
+  <title>Espace Client — Transit Chine-Bénin</title>
+  <meta name="description" content="Déclarez vos colis, suivez-les en temps réel de la Chine au Bénin et consultez vos factures.">
+
+  <!-- Police (repli automatique sur la police système si hors-ligne) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+
+  <!-- style.css = feuille COMMUNE aux 4 portails + styles de l'espace client -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="page-client">
+
+  <!-- =================================================================
+       ÉCRAN 1 : CONNEXION (affiché si aucune session Google)
+       ================================================================= -->
+  <section id="auth-screen" class="auth" hidden>
+    <div class="auth__card">
+      <div class="brand brand--lg">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </span>
+        <span class="brand__name js-company">Transit Chine-Bénin</span>
+      </div>
+
+      <h1 class="auth__title">Vos colis de Chine, suivis jusqu'à Cotonou</h1>
+      <p class="auth__text">Déclarez vos achats, suivez chaque étape en temps réel et retrouvez vos factures, au même endroit.</p>
+
+      <ul class="auth__points">
+        <li>Suivi en temps réel, de l'entrepôt à l'agence</li>
+        <li>Tarifs clairs au kg (aérien) et au m³ (maritime)</li>
+        <li>Connexion sécurisée, sans mot de passe</li>
+      </ul>
+
+      <button id="btn-google-login" class="btn btn--google btn--block" type="button">
+        <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3A12 12 0 1 1 24 12c3.1 0 5.8 1.2 8 3l5.7-5.7A20 20 0 1 0 44 24c0-1.3-.1-2.7-.4-3.9z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8A12 12 0 0 1 24 12c3.1 0 5.8 1.2 8 3l5.7-5.7A20 20 0 0 0 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A12 12 0 0 1 12.700 28l-6.500 5C9.500 39.600 16.200 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.300a12 12 0 0 1-4.100 5.600l6.200 5.200C37 39.200 44 34 44 24c0-1.300-.1-2.700-.4-3.900z"/></svg>
+        Continuer avec Google
+      </button>
+      <p class="auth__legal">Première visite ? Votre compte est créé automatiquement à la première connexion.</p>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       ÉCRAN 2 : ACCÈS REFUSÉ (rôle non autorisé, compte désactivé...)
+       ================================================================= -->
+  <section id="access-denied" class="auth" hidden>
+    <div class="auth__card auth__card--center">
+      <div class="denied__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h1 class="auth__title">Accès refusé</h1>
+      <p id="denied-message" class="auth__text"></p>
+      <a id="denied-redirect" class="btn btn--primary btn--block" href="#" hidden></a>
+      <button type="button" class="btn btn--ghost btn--block js-logout">Se déconnecter</button>
+    </div>
+  </section>
+
+  <!-- Écran de chargement : masqué automatiquement dès qu'un des écrans ci-dessus s'affiche -->
+  <div id="boot" class="boot" role="status" aria-label="Chargement"><span class="spinner"></span></div>
+
+  <!-- =================================================================
+       APPLICATION (SPA) : visible uniquement pour un client connecté.
+       Le contenu de <main id="view"> est remplacé dynamiquement par
+       index.js, sans jamais recharger la page.
+       ================================================================= -->
+  <div id="app" hidden>
+
+    <!-- ===== En-tête FIXE : nom de l'entreprise + bandeau d'annonces ===== -->
+    <header class="topbar" id="topbar">
+      <div class="topbar__main">
+        <button type="button" class="icon-btn topbar__menu" id="btn-menu" aria-label="Ouvrir le menu" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+
+        <a class="brand" href="#/dashboard" aria-label="Accueil">
+          <span class="brand__mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </span>
+          <span class="brand__name js-company">Transit Chine-Bénin</span>
+        </a>
+
+        <a class="userchip" href="#/profile" aria-label="Mon profil">
+          <img class="avatar js-user-avatar" alt="" width="34" height="34" referrerpolicy="no-referrer">
+          <span class="userchip__name js-user-name"></span>
+        </a>
+      </div>
+
+      <!-- Bande d'annonces défilante en continu (contenu géré par l'admin) -->
+      <div class="ticker" id="ticker" hidden aria-label="Annonces">
+        <span class="ticker__label">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          Annonce
+        </span>
+        <div class="ticker__viewport">
+          <div class="ticker__track" id="ticker-track"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== Menu latéral (tiroir sur mobile) ===== -->
+    <aside class="sidebar" id="sidebar" aria-label="Navigation principale">
+      <nav id="nav" class="nav"></nav>
+
+      <div class="sidebar__foot">
+        <div class="sidebar__user">
+          <img class="avatar js-user-avatar" alt="" width="38" height="38" referrerpolicy="no-referrer">
+          <div class="sidebar__userinfo">
+            <strong class="js-user-name"></strong>
+            <small class="js-user-email"></small>
+          </div>
+        </div>
+        <button type="button" class="btn btn--ghost btn--block js-logout">Se déconnecter</button>
+      </div>
+    </aside>
+    <div class="overlay" id="overlay" hidden></div>
+
+    <!-- ===== Zone dynamique : chaque section est injectée ici par index.js ===== -->
+    <main class="main" id="view" tabindex="-1" aria-live="polite"></main>
+
+    <!-- ===== Barre de navigation mobile (construite par index.js) ===== -->
+    <nav class="bottom-nav" id="bottom-nav" aria-label="Navigation rapide"></nav>
+
+    <!-- ===== Fenêtre modale : détail / modification d'un colis ===== -->
+    <dialog id="modal" class="modal" aria-labelledby="modal-title">
+      <div class="modal__panel">
+        <header class="modal__head">
+          <h2 id="modal-title" class="modal__title"></h2>
+          <button type="button" class="icon-btn" id="modal-close" aria-label="Fermer">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </header>
+        <div class="modal__body" id="modal-body"></div>
+      </div>
+    </dialog>
+
+    <!-- ===== Fenêtre de confirmation ===== -->
+    <dialog id="confirm" class="modal modal--sm" aria-labelledby="confirm-title">
+      <form method="dialog" class="modal__panel">
+        <header class="modal__head"><h2 id="confirm-title" class="modal__title"></h2></header>
+        <div class="modal__body">
+          <p id="confirm-text" class="muted"></p>
+          <div class="modal__actions">
+            <button type="submit" value="cancel" class="btn btn--ghost">Annuler</button>
+            <button type="submit" value="ok" id="confirm-ok" class="btn btn--primary">Confirmer</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+  </div>
+
+  <noscript><p class="noscript">JavaScript est nécessaire pour utiliser cette application.</p></noscript>
+
+  <!-- Module principal : importe config.js et plateforms.js -->
+  <script type="module" src="assets/js/index.js"></script>
+</body>
+</html>

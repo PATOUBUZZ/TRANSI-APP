@@ -1,0 +1,76 @@
+/* =====================================================================
+ *  admin.css  |  Styles PROPRES au portail administrateur
+ * =====================================================================
+ *  Chargé APRÈS style.css. Les composants communs aux portails staff
+ *  (tableaux, filtres, formulaires, interrupteurs, pastilles...) sont
+ *  dans style.css, section 15. Ici : uniquement ce qui est spécifique
+ *  à l'administration.
+ *
+ *  Plan :
+ *   1. Barres de statistiques     3. Journal d'audit et historique
+ *   2. Mise en page des vues      4. Paramètres et tarifs
+ *                                 5. Responsive
+ * ===================================================================== */
+
+
+/* =====================================================================
+ * 1. BARRES DE STATISTIQUES (CSS pur, sans bibliothèque)
+ * ===================================================================== */
+.bars { display: grid; gap: 12px; }
+.bar { display: grid; grid-template-columns: minmax(110px, 170px) 1fr auto; align-items: center; gap: 12px; font-size: .875rem; }
+.bar__label { color: var(--ink-2); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar__track { height: 12px; background: var(--bg); border-radius: 99px; overflow: hidden; }
+.bar__fill {
+  display: block; height: 100%; border-radius: inherit; min-width: 3px;
+  background: linear-gradient(90deg, var(--brand-500), var(--brand-600));
+  transition: width .5s ease;
+}
+.bar__fill--accent  { background: linear-gradient(90deg, var(--accent), var(--accent-600)); }
+.bar__fill--success { background: linear-gradient(90deg, #22c55e, var(--success)); }
+.bar__value { font-weight: 800; min-width: 28px; text-align: right; }
+
+
+/* =====================================================================
+ * 2. MISE EN PAGE DES VUES
+ * ===================================================================== */
+.split { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+
+.stat-line { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .9375rem; }
+.stat-line:last-child { border-bottom: 0; }
+.stat-line strong { font-weight: 800; }
+
+
+/* =====================================================================
+ * 3. JOURNAL D'AUDIT ET HISTORIQUE D'UN COLIS
+ * ===================================================================== */
+.log-list { display: grid; gap: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.log-item { display: grid; grid-template-columns: 150px 1fr; gap: 6px 16px; padding: 12px 16px; border-bottom: 1px solid var(--line); font-size: .875rem; }
+.log-item:last-child { border-bottom: 0; }
+.log-item__when { color: var(--muted); font-size: .8125rem; }
+.log-item__what { display: grid; gap: 2px; min-width: 0; }
+.log-item__what strong { overflow-wrap: anywhere; }
+.log-item__what small { color: var(--muted); overflow-wrap: anywhere; }
+
+.history { display: grid; gap: 8px; }
+.history .log-item { grid-template-columns: 1fr; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+
+
+/* =====================================================================
+ * 4. PARAMÈTRES ET TARIFS
+ * ===================================================================== */
+.setting-card { display: grid; gap: 14px; }
+.setting-row { display: grid; gap: 6px; }
+.rate-edit { display: grid; gap: 14px; }
+
+
+/* =====================================================================
+ * 5. RESPONSIVE
+ * ===================================================================== */
+@media (max-width: 1023px) {
+  .split { grid-template-columns: 1fr; }
+}
+@media (max-width: 639px) {
+  .bar { grid-template-columns: 1fr auto; }
+  .bar__track { grid-column: 1 / -1; grid-row: 2; }
+  .log-item { grid-template-columns: 1fr; }
+}
