@@ -123,6 +123,7 @@ const hide = (el) => { if (el) el.hidden = true; };
 
 /** Affiche un seul des 3 écrans : 'auth' | 'denied' | 'app' */
 function showScreen(name) {
+  hide($('#boot'));            // l'écran de chargement disparaît dès qu'un écran est choisi
   hide($('#auth-screen'));
   hide($('#access-denied'));
   hide($('#app'));
