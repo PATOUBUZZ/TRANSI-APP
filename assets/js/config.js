@@ -15,8 +15,8 @@
 /* ---------------------------------------------------------------------
  * 1. SUPABASE  (Dashboard > Project Settings > API)
  * --------------------------------------------------------------------- */
-export const SUPABASE_URL      = 'https://VOTRE-PROJET.supabase.co';
-export const SUPABASE_ANON_KEY = 'VOTRE_CLE_ANON_PUBLIQUE';
+export const SUPABASE_URL      = 'https://juhryagryhlnxjruyhkh.supabase.co';
+export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1aHJ5YWdyeWhsbnhqcnV5aGtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUyMTQxNTYsImV4cCI6MjExMDc5MDE1Nn0.v9X5405ZNGcae7y0lSHV3buZbKH_lWScRApOz1ZEJLo';
 
 
 /* ---------------------------------------------------------------------
